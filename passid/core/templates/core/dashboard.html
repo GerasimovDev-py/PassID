@@ -1,44 +1,77 @@
 {% extends 'core/base.html' %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-5">
-    <h1 class="fw-bold text-dark">Панель контроля PassID</h1>
-    <a href="{% url 'index' %}" class="btn btn-outline-secondary">Выход</a>
-</div>
 
-<div class="row">
-    {% for v in visitors %}
-    <div class="col-12">
-        <div class="request-item {{ v.status }}">
-            <div class="request-header">
-                <div class="request-author">{{ v.full_name }}</div>
-                <div class="request-date">{{ v.created_at|date:"H:i" }}</div>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Личный кабинет охранника</h2>
+        <a href="{% url 'staff_logout' %}" class="btn btn-outline-danger">Выйти</a>
+    </div>
+
+    <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="active-tab" data-bs-toggle="tab" href="#active" role="tab">Активные заявки</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="archive-tab" data-bs-toggle="tab" href="#archive" role="tab">Архив</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="active" role="tabpanel">
+            <div id="active-list">
+                {% include 'core/dashboard_partial_active.html' %}
             </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="request-organization">🏢 {{ v.organization }}</div>
-                    <div class="small text-muted">📞 {{ v.phone }}</div>
-                </div>
-                <div class="col-md-4">
-                    {% if v.escort %}
-                    <div class="request-text">🤝 Ожидает: <strong>{{ v.escort.full_name }}</strong></div>
-                    {% else %}
-                    <div class="text-muted small">Без сопровождения</div>
-                    {% endif %}
-                </div>
-                <div class="col-md-4 text-end">
-                    {% if v.status == 'pending' %}
-                    <a href="{% url 'approve' v.id %}" class="btn btn-sm btn-primary py-2 px-4 shadow-sm" style="border-radius: 10px;">
-                        ПОДТВЕРДИТЬ ВХОД
-                    </a>
-                    {% else %}
-                    <span class="badge bg-success p-2 px-3" style="border-radius: 10px;">ДОПУЩЕН</span>
-                    {% endif %}
-                </div>
+        </div>
+        
+        <div class="tab-pane fade" id="archive" role="tabpanel">
+            <div id="archive-list">
+                {% include 'core/dashboard_partial_archive.html' %}
             </div>
         </div>
     </div>
-    {% empty %}
-    <p class="text-center text-muted">Заявок пока нет...</p>
-    {% endfor %}
 </div>
+
+<script>
+function updateActive() {
+    fetch("{% url 'dashboard_partial' %}?tab=active")
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('active-list').innerHTML = html;
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function updateArchive() {
+    fetch("{% url 'dashboard_partial' %}?tab=archive")
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('archive-list').innerHTML = html;
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function markDeparted(pk) {
+    if (!confirm('Отметить посетителя как ушедшего?')) return;
+    
+    fetch(`/departed/${pk}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    }).then(response => {
+        if (response.ok) {
+            updateActive();
+            updateArchive();
+        }
+    });
+}
+
+setInterval(updateActive, 5000);
+
+window.addEventListener('load', () => {
+    updateActive();
+    updateArchive();
+});
+</script>
+
 {% endblock %}

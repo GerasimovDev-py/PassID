@@ -1,0 +1,30 @@
+{% for v in visitors %}
+    {% if v.status == 'departed' %}
+    <div class="request-item departed">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h5 class="mb-2">{{ v.full_name }}</h5>
+                <p class="text-muted mb-1">
+                    {{ v.get_document_type_display }} №{{ v.document_number }}
+                </p>
+                <div class="mt-2">
+                    <strong style="color: #667eea;">Сопровождающий:</strong><br>
+                    <span>{{ v.escort.full_name }}</span>
+                </div>
+                {% if v.escort_phone %}
+                <p class="small text-muted">Тел.: {{ v.escort_phone }}</p>
+                {% endif %}
+            </div>
+        </div>
+        <hr>
+        <div class="row small text-muted">
+            <div class="col-6">
+                Пришёл: {{ v.arrival_time|date:"d.m.Y H:i"|default:"—" }}
+            </div>
+            <div class="col-6 text-end">
+                Ушёл: <span style="color:#198754">{{ v.departure_time|date:"d.m.Y H:i" }}</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endfor %}

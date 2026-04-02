@@ -1,5 +1,9 @@
 {% extends 'core/base.html' %}
 {% block content %}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <div class="row justify-content-center">
     <div class="col-md-10">
         <div class="card border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
@@ -12,19 +16,33 @@
                             <label class="form-label">ФИО полностью</label>
                             <input type="text" name="full_name" class="form-control" placeholder="Иванов Иван Иванович" required>
                         </div>
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Паспорт (серия/номер)</label>
-                                <input type="text" name="passport" class="form-control" placeholder="0000 000000" required>
+                                <label class="form-label">Тип документа</label>
+                                <select name="document_type" class="form-select" required>
+                                    <option value="passport_rf">Паспорт РФ</option>
+                                    <option value="international_passport">Загранпаспорт</option>
+                                    <option value="driver_license">Водительское удостоверение</option>
+                                    <option value="other">Другой документ</option>
+                                </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Телефон</label>
-                                <input type="text" name="phone" class="form-control" placeholder="+7..." required>
+                                <label class="form-label">Номер документа</label>
+                                <input type="text" name="document_number" class="form-control" placeholder="4500 123456" required>
                             </div>
                         </div>
+
                         <div class="mb-4">
-                            <label class="form-label">Организация</label>
-                            <input type="text" name="organization" class="form-control" placeholder="ООО 'Вектор'" required>
+                            <label class="form-label">
+                                <i class="bi bi-calendar3 me-2"></i>Пропуск будет действовать до:
+                            </label>
+                            <input type="text" 
+                                   id="valid_until" 
+                                   name="valid_until" 
+                                   class="form-control" 
+                                   placeholder="Выберите дату и время" 
+                                   required>
                         </div>
                 </div>
                 
@@ -32,15 +50,21 @@
                     <div class="d-flex align-items-center mb-4">
                         <span class="request-department">СОПРОВОЖДАЮЩИЙ</span>
                     </div>
-                    <p class="text-muted small mb-4">Выберите человека, который уже находится на объекте и готов вас встретить.</p>
-                    <select name="escort" class="form-select mb-5">
-                        <option value="">Без сопровождающего</option>
+                    <p class="text-muted small mb-4">Выберите человека, который уже находится на объекте.</p>
+                    
+                    <select name="escort" class="form-select mb-3" required>
+                        <option value="" disabled selected>Выберите сопровождающего</option>
                         {% for person in escorts %}
                         <option value="{{ person.id }}">{{ person.full_name }}</option>
                         {% endfor %}
                     </select>
+
+                    <div class="mb-4">
+                        <label class="form-label">Телефон сопровождающего</label>
+                        <input type="text" name="escort_phone" class="form-control" placeholder="+7 (___) ___-__-__" required>
+                    </div>
                     
-                    <button type="submit" class="btn-passid w-100 mt-4">
+                    <button type="submit" class="btn-passid w-100 mt-3">
                         СФОРМИРОВАТЬ ЗАПРОС НА ДОПУСК
                     </button>
                     </form>
@@ -49,4 +73,18 @@
         </div>
     </div>
 </div>
+
+<script>
+    flatpickr("#valid_until", {
+        enableTime: true,
+        time_24hr: true,
+        dateFormat: "d.m.Y H:i",
+        minDate: "today",
+        defaultHour: 18,
+        defaultMinute: 0,
+        locale: "ru",
+        allowInput: true
+    });
+</script>
+
 {% endblock %}

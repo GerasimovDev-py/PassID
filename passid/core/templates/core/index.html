@@ -1,31 +1,52 @@
 {% extends 'core/base.html' %}
-
 {% block content %}
-<div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 80vh;">
-    <div class="text-center mb-5">
-        <h1 class="display-3 fw-bold" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-            PassID
-        </h1>
-        <p class="text-muted">Интеллектуальная система управления доступом</p>
+
+<div class="text-center mb-5">
+    <h1 class="display-4 fw-bold">PassID</h1>
+    <p class="lead text-muted">Система оформления и контроля пропусков</p>
+</div>
+
+<div class="row justify-content-center g-4">
+
+    <div class="col-lg-4 col-md-6">
+        <div class="card h-100">
+            <div class="card-body p-5 text-center">
+                <i class="bi bi-person-plus-fill mb-4" style="font-size: 3.8rem; color: #667eea;"></i>
+                <h4 class="mb-3">Подать заявку</h4>
+                <p class="text-muted">Оформить пропуск для входа на объект</p>
+                <a href="{% url 'visitor_form' %}" class="btn btn-passid btn-lg w-100 mt-4">
+                    Заполнить заявку
+                </a>
+            </div>
+        </div>
     </div>
 
-    <div class="row g-4 w-100 justify-content-center" style="max-width: 800px;">
-        <div class="col-md-6">
-            <a href="{% url 'visitor_form' %}" class="btn-passid w-100 d-block text-center text-decoration-none">
-                <div class="py-4">
-                    <span class="d-block fs-4">ПОЛУЧИТЬ ПРОПУСК</span>
-                    <small class="opacity-75">Для гостей и посетителей</small>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-6">
-            <a href="{% url 'staff_login' %}" class="btn w-100 d-block text-center text-decoration-none border-0 shadow-sm bg-white" style="border-radius: 16px; transition: 0.3s;">
-                <div class="py-4 text-dark">
-                    <span class="d-block fs-4 fw-bold text-secondary">ВХОД СОТРУДНИКА</span>
-                    <small class="text-muted">Личный кабинет охраны</small>
-                </div>
-            </a>
+    <div class="col-lg-4 col-md-6">
+        <div class="card h-100">
+            <div class="card-body p-5 text-center">
+                <i class="bi bi-shield-lock-fill mb-4" style="font-size: 3.8rem; color: #198754;"></i>
+                <h4 class="mb-3">Личный кабинет сотрудника службы безопасности</h4>
+                <p class="text-muted">Просмотр и обработка заявок</p>
+                <a href="{% url 'staff_login' %}" class="btn btn-passid btn-lg w-100 mt-4" style="background: #198754;">
+                    Войти в кабинет
+                </a>
+            </div>
         </div>
     </div>
+
+    <div class="col-lg-4 col-md-6">
+        <div class="card h-100">
+            <div class="card-body p-5 text-center">
+                <i class="bi bi-search mb-4" style="font-size: 3.8rem; color: #fd7e14;"></i>
+                <h4 class="mb-3">Отследить статус</h4>
+                <p class="text-muted">Проверить статус пропуска по номеру документа</p>
+                <a href="{% url 'check_status' %}" class="btn btn-passid btn-lg w-100 mt-4" style="background: #fd7e14;">
+                    Проверить пропуск
+                </a>
+            </div>
+        </div>
+    </div>
+
 </div>
+
 {% endblock %}

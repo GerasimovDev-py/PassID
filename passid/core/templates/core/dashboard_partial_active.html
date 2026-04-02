@@ -1,0 +1,39 @@
+{% for v in visitors %}
+    {% if v.status != 'departed' %}
+    <div class="request-item {{ v.status }}">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="flex-grow-1">
+                <h5 class="mb-1">{{ v.full_name }}</h5>
+                <p class="text-muted mb-2">
+                    {{ v.get_document_type_display }} №{{ v.document_number }}
+                </p>
+                <div>
+                    <strong style="color: #667eea;">Сопровождающий:</strong> 
+                    {{ v.escort.full_name }}
+                </div>
+                {% if v.escort_phone %}
+                <small class="text-muted">Тел.: {{ v.escort_phone }}</small>
+                {% endif %}
+            </div>
+
+            <div class="text-end">
+                {% if v.status == 'pending' %}
+                <a href="{% url 'approve_visitor' v.id %}" 
+                   class="btn btn-primary btn-lg px-4 py-2">
+                    Подтвердить вход
+                </a>
+                {% elif v.status == 'approved' %}
+                <button onclick="markDeparted({{ v.id }})" 
+                        class="btn btn-danger btn-lg px-4 py-2">
+                    Ушёл
+                </button>
+                {% endif %}
+            </div>
+        </div>
+
+        <small class="text-muted d-block mt-3">
+            Заявка от {{ v.created_at|date:"d.m.Y H:i" }}
+        </small>
+    </div>
+    {% endif %}
+{% endfor %}

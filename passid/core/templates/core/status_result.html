@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<div class="row justify-content-center" style="min-height: 70vh;">
+    <div class="col-md-7">
+        <div class="request-item bg-white p-5">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold">Статус вашего пропуска</h2>
+                <p class="text-muted">
+                    Документ: <strong>{{ visitor.get_document_type_display }} №{{ visitor.document_number }}</strong>
+                </p>
+            </div>
+
+            {% if visitor.status == 'approved' %}
+                <div class="text-center mb-4" style="color: #48bb78;">
+                    <h1 style="font-size: 4.5rem;">✓</h1>
+                    <h3 class="fw-bold">Пропуск одобрен!</h3>
+                    <p class="lead mt-3">
+                        Вы можете пройти на объект.<br>
+                        Пожалуйста, предъявите документ на посту охраны.
+                    </p>
+                    <p class="mt-3">
+                        <strong>Действует до:</strong> {{ visitor.valid_until|date:"d.m.Y H:i" }}
+                    </p>
+                </div>
+
+            {% elif visitor.status == 'pending' %}
+                <div class="text-center mb-4" style="color: #f4a261;">
+                    <h1 style="font-size: 4.5rem;">⏳</h1>
+                    <h3 class="fw-bold">Заявка на рассмотрении</h3>
+                    <p class="lead mt-3">
+                        Ваш пропуск ещё не одобрен.<br>
+                        Пожалуйста, дождитесь подтверждения от сотрудника охраны.
+                    </p>
+                </div>
+
+            {% elif visitor.status == 'departed' %}
+                <div class="text-center mb-4" style="color: #6c757d;">
+                    <h1 style="font-size: 4.5rem;">✓</h1>
+                    <h3 class="fw-bold">Посетитель уже ушёл</h3>
+                    <p class="mt-3">
+                        Пропуск был использован.<br>
+                        Время ухода: {{ visitor.departure_time|date:"d.m.Y H:i" }}
+                    </p>
+                </div>
+
+            {% else %}
+                <div class="text-center mb-4" style="color: #f5576c;">
+                    <h1 style="font-size: 4.5rem;">✕</h1>
+                    <h3 class="fw-bold text-danger">Доступ закрыт</h3>
+                </div>
+            {% endif %}
+
+            <div class="text-center mt-5">
+                <a href="{% url 'check_status' %}" class="btn btn-outline-primary px-5 me-3">
+                    Проверить другой пропуск
+                </a>
+                <a href="{% url 'index' %}" class="btn btn-secondary px-5">
+                    Вернуться на главную
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
